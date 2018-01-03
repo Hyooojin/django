@@ -311,13 +311,17 @@ terminal
 
 </details>
 
-### #3.URL 설계
+### #4.view추가와 url pattern
 
-`#2 화면띄우기`에서 이미했던 URL설계를 심화해서 다룬다. 복습을 해보면, URL을 설계하기 위해서 URLconf 파이썬 모듈을 생성해야 한다. 
+view는 Django 어플리케이션이 일반적으로 특정 기능과 탬플릿을 제공하는 웹페이지의 한 종류이다. 
 
-**URLconf: URL패턴과 파이썬 콜백 함수 간의 간단한 매핑 정보를 담고 있는 만들고자 하는 앱에 대한 목차이다. 
+추가 view들을 작성하고, 그에 알맞는 URL 설계를 한다. 
 
-*  django2/news/urls.py
+>  `#2 화면띄우기`에서 이미했던 URL설계를 심화해서 다룬다. 복습을 해보면, URL을 설계하기 위해서 URLconf 파이썬 모듈을 생성해야 한다. 
+>
+>  **URLconf: URL패턴과 파이썬 콜백 함수 간의 간단한 매핑 정보를 담고 있는 만들고자 하는 앱에 대한 목차이다. 
+
+- django2/news/urls.py
 
 ```python
 from django.urls import path
@@ -337,6 +341,33 @@ urlpatterns = [
 4. URL패턴들 중 하나가 매치하면, Django는 주어진 파이썬 함수인 view를 호출한다.
    <span style="color:grey">각각의 view에는 요청 메타데이터가 포함된 요청 개체와 패턴에 잡힌 값이 전달 된다. </span> 
 
+* django3/news/views.py
+
+```python
+from django.shortcuts import render
+
+from .models import Article
+
+def year_archive(request, year):
+    a_list = Article.objects.filter(pub_date__year=year)
+    context = {'year': year, 'article_list': a_list}
+    return render(request, 'news/year_archive.html', context)
+```
 
 
 
+#### view 작성
+
+<details>
+
+<summery> view 작성 자세히</summery>
+
+</details>
+
+#### url 설정
+
+<details>
+
+<summery> url 작성 자세히</summery>
+
+</details>
