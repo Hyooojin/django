@@ -60,7 +60,7 @@ urls > views > html
 * cmd창에서 프로젝트 생성
 
 ```
-[path]> django-admmin startproject [포로젝트명]
+[path]> django-admin startproject [포로젝트명]
 # >django-admin startproject django2
 ```
 
@@ -253,6 +253,8 @@ news라는 디렉토리가 생성된 것을 볼 수 있다.
       headline = models.CharField(max_length=200)
       content = models.TextField()
       reporter = models.ForeignKey(Reporter, on_delete=models.CASCADE)
+      def __str__(self):
+          return self.headline
   ```
 
 #### 4. 모델의 활성화
@@ -357,17 +359,120 @@ def year_archive(request, year):
 
 
 #### view 작성
+일반적으로, 뷰는 <u>파라미터들에 따라 데이터를 가져오며</u> <u>탬플릿을 로드</u>하고 <u>탬플릿을 가져온 데이터로 렌더링</u>한다. 
+**View가 수행할 일**
+* 요청된 페이지의 내용을 담고 있는 HttpResponse 객체를 반환시키거나
+* Http404와 같은 예외를 발생시킨다.
+  <br>
 
 <details>
 
 <summary> view 작성 자세히</summary>
+**우선, view에서 페이지의 디자인을 하드코딩**
 
+
+
+**Python 코드로부터 디자인을 분리하도록 Django의 탬플릿 시스템을 사용**
+
+참고페이지: [첫 번째 장고 앱 작성하기, part 3](https://docs.djangoproject.com/ko/2.0/intro/tutorial03/)
+
+news 디렉토리에 `templates` 라는 디렉토리를 만듭니다. 
+Django는 여기서 탬플릿을 찾게된다. 
+
+ ```
+project 의 TEMPLATES 설정에는 Django 가 어떻게 template 을 불러오고 랜더링 할 것인지 를 서술합니다. 기본 설정 파일은 APP_DIRS 옵션이 True 로 설정된 DjangoTemplates 백엔드를 구성합니다 관례에 따라, DjangoTemplates 은 각 INSTALLED_APPS 디렉토리의 "templates" 하위 디렉토리를 탐색합니다.
+ ```
+
+* django2/settings.py>  TEMPLATES
+
+```
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+```
+
+>templates 디렉토리 내에 django3라는 디렉토리를 생성하고, 그 안에 index.html을 만든다. 즉, template은 django3/templates/django3/index.html과 같은 형태가 된다. 
+>app_directories template 로도가 그렇게 동작하기 때문에, Django에서 dl template을 단순히 django3/index.html로 참조할 수 있다. 
+
+* django2/news/views.py
+  **[year_archive에 대한 예제]**
+
+```python
+from django.shortcuts import render
+
+from .models import Article
+
+def year_archive(request, year):
+    a_list = Article.objects.filter(pub_date__year=year)
+    context = {'year': year, 'article_list': a_list}
+    return render(request, 'news/year_archive.html', context)
+```
+이 예제는 Django의 template system을 사용한다.
+<br>
+<br>
+
+<u>template system을 사용하는 다른 방법</u>
+
+* polls/templates/polls/index.html
+
+```python
+from django.template import loader # 추가
+```
+
+* polls/views.py
+  template을 이용하여 polls/views.py에 index view를 업데이트 
+
+```python
+from django.http import HttpResponse
+from django.template import loader
+
+from .models import Question
+
+
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    template = loader.get_template('polls/index.html')
+    context = {
+        'latest_question_list': latest_question_list,
+    }
+    return HttpResponse(template.render(context, request))
+```
+
+```
+이 코드는 polls/index.html template 을 불러온 후, context 를 전달합니다. context 는 template 에서 쓰이는 변수명과, Python 의 객체를 연결하는 사전형 값입니다.
+
+브라우저에서 "/polls/" 페이지를 불러오면, Tutorial 2 에서 작성한 "What's up" 질문이 포함된 리스트가 표시됩니다. 표시된 질문의 링크는 해당 질문에 대한 세부 페이지를 가르킵니다.
+```
+
+
+
+* news/year_archive.html
+  <span style="color:grey">위의 코드(django2/news/views.py)은 **news/year_archive.html**을 로드한다.  </span>
+```python
+
+```
 </details>
 
 #### url 설정
+
 
 <details>
 
 <summary> url 작성 자세히</summary>
 
 </details>
+
+
+
