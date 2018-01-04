@@ -20,3 +20,4 @@ urlpatterns = [
     path('news/', include('news.urls')),
     path('admin/', admin.site.urls),
 ]
+

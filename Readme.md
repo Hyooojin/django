@@ -104,7 +104,7 @@ urlpatterns = [
 
 <details>
 
-<summery>URL 설정 자세히</summery>
+<summary>URL 설정 자세히</summary>
 
 참고 페이지: [첫 번째 장고 앱 작성하기, part1](https://docs.djangoproject.com/ko/2.0/intro/tutorial01/)
 
@@ -200,7 +200,7 @@ http://localhost:8000/news/
 
 <details>
 
-<summery>모델 설계 자세히</summery>
+<summary>모델 설계 자세히</summary>
 
 #### 1. app을 생성한다 
 
@@ -360,7 +360,7 @@ def year_archive(request, year):
 
 <details>
 
-<summery> view 작성 자세히</summery>
+<summary> view 작성 자세히</summary>
 
 </details>
 
@@ -368,6 +368,6 @@ def year_archive(request, year):
 
 <details>
 
-<summery> url 작성 자세히</summery>
+<summary> url 작성 자세히</summary>
 
 </details>
